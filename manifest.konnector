@@ -1,0 +1,61 @@
+{
+  "version": "0.0.1",
+  "name": "Maif EPA",
+  "type": "konnector",
+  "language": "node",
+  "icon": "icon.png",
+  "slug": "maif-epa",
+  "source": "git@github.com:konnectors/maif-epa.git",
+  "editor": "Cozy",
+  "vendor_link": "https://www.maif.fr",
+  "categories": ["other"],
+  "fields": {
+    "login": {
+      "type": "text"
+    }
+  },
+  "data_types": [
+    "bill"
+  ],
+  "screenshots": [],
+  "permissions": {
+    "accounts": {
+      "type": "io.cozy.accounts"
+    },
+    "identities": {
+      "type": "io.cozy.identities"
+    }
+  },
+  "developer": {
+    "name": "Cozy Cloud",
+    "url": "https://cozy.io"
+  },
+  "langs": ["fr", "en"],
+  "locales": {
+    "fr": {
+      "short_description": "Récupère vos données maif",
+      "long_description": "Récupère vos données maif",
+      "permissions": {
+        "accounts": {
+          "description": "Utilisé pour obtenir les données du compte"
+        },
+        "identities": {
+          "description": "Pour pouvoir réutiliser votre identité Maif"
+        }
+      }
+    },
+    "en": {
+      "short_description": "Fetch your maif data",
+      "long_description": "Fetch your maif data",
+      "permissions": {
+        "accounts": {
+          "description": "Required to get the account's data"
+        },
+        "identities": {
+          "description": "Required to save your identity and reuse it"
+        }
+      }
+    }
+  },
+  "manifest_version": "2"
+}
