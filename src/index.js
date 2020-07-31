@@ -2,7 +2,12 @@ process.env.SENTRY_DSN =
   process.env.SENTRY_DSN ||
   'https://eb3bcb69e2d54604972c0564c9b98d05@sentry.cozycloud.cc/138'
 
-const { BaseKonnector, requestFactory } = require('cozy-konnector-libs')
+const {
+  BaseKonnector,
+  requestFactory,
+  errors,
+  log
+} = require('cozy-konnector-libs')
 
 const baseUrl = 'https://epaapi.preprod.opunmaif.fr/api/data-collect'
 
@@ -20,6 +25,10 @@ async function start(fields, cozyParameters) {
     }
   })
   const personnes = await request.get(`${baseUrl}/personnes/${idSiebel}`)
+  log('info', `found ${personnes.length} personne(s)`)
+  if (!personnes || !personnes.length) {
+    throw new Error(errors.LOGIN_FAILED)
+  }
   const identities = personnes.map(personne => ({
     fullname: `${personne.prenom} ${personne.nom}`,
     name: {
