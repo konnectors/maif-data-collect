@@ -1,4 +1,4 @@
-[Cozy][cozy] <YOUR SUPER NEW KONNECTOR NAME>
+[Cozy][cozy] Maif EPA connector
 =======================================
 
 What's Cozy?
@@ -11,8 +11,72 @@ What's Cozy?
 What is this konnector about ?
 ------------------------------
 
-This konnector retrieves your <SOME DATA> and <SOME OTHER DATA> from <SERVICE>
-<YOUR DESCRIPTION HERE>
+This konnector retrieves io.cozy.identities data from you maif account at the moment
+
+
+```javascript
+{
+  "cozyMetadata": {
+    "doctypeVersion": 1,
+    "metadataVersion": 1,
+    "createdAt": "2020-07-31T13:57:55.524Z",
+    "createdByApp": "maif-epa",
+    "createdByAppVersion": "0.0.1",
+    "updatedAt": "2020-07-31T13:57:55.524Z",
+    "updatedByApps": [
+      {
+        "slug": "maif-epa",
+        "date": "2020-07-31T13:57:55.524Z",
+        "version": "0.0.1"
+      }
+    ],
+    "sourceAccount": "default_account_id",
+    "sourceAccountIdentifier": "1EPT28571"
+  },
+  "identifier": "testaccount",
+  "contact": {
+    "fullname": "John Doe",
+    "name": {
+      "familyName": "Doe",
+      "givenName": "John"
+    },
+    "birthday": "1958-02-04",
+    "email": [
+      {
+        "address": "maif@test.fr"
+      }
+    ],
+    "address": [
+      {
+        "street": "2 RUE DU MOULIN",
+        "postcode": "75000",
+        "city": "PARIS"
+      }
+    ],
+    "phone": [
+      {
+        "number": "+330900000001"
+      }
+    ],
+    "maif": {
+      "codeCivilite": "CODE_03",
+      "numeroPaysNaissance": "France",
+      "paysNaissance": "France",
+      "identifiant": "1-EPT-28571",
+      "numeroSocietaire": "1355575P",
+      "codeSexe": "CODE_1",
+      "profession": {
+        "codeDomaineActivite": "CODE_026",
+        "codeEmployeur": "A renseigner",
+        "codeProfession": "CODE_06",
+        "codeSecteurActivite": "CODE_03"
+      }
+    }
+  },
+  "_id": "c99fc8e6-b5a8-44df-b7af-6be4ce51bbd4"
+}
+```
+
 
 ### Open a Pull-Request
 
@@ -28,7 +92,7 @@ Create a `konnector-dev-config.json` file at the root with your test credentials
 ```javascript
 {
   "COZY_URL": "http://cozy.tools:8080",
-  "fields": {"login":"zuck.m@rk.fb", "password":"123456"}
+  "fields": {"login":"zuck.m@rk.fb"}
 }
 ```
 Then :
@@ -45,7 +109,7 @@ This connector uses [cozy-konnector-libs](https://github.com/cozy/cozy-konnector
 
 ### Maintainer
 
-The lead maintainers for this konnector is <YOUR NAME>
+The lead maintainers for this konnector is Cozy
 
 
 ### Get in touch
