@@ -14,9 +14,6 @@
       "type": "text"
     }
   },
-  "data_types": [
-    "bill"
-  ],
   "screenshots": [],
   "permissions": {
     "accounts": {
@@ -24,6 +21,9 @@
     },
     "identities": {
       "type": "io.cozy.identities"
+    },
+    "timelines": {
+      "type": "fr.maif.timelines"
     }
   },
   "developer": {
@@ -41,6 +41,9 @@
         },
         "identities": {
           "description": "Pour pouvoir réutiliser votre identité Maif"
+        },
+        "timelines": {
+          "description": "Pour pouvoir vous donnes des informations en temps réel"
         }
       }
     },
@@ -53,6 +56,9 @@
         },
         "identities": {
           "description": "Required to save your identity and reuse it"
+        },
+        "timelines": {
+          "description": "Required to to give you real time information"
         }
       }
     }
