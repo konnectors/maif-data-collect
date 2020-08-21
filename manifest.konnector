@@ -1,11 +1,11 @@
 {
   "version": "0.0.1",
-  "name": "Maif EPA",
+  "name": "Maif Data Collect",
   "type": "konnector",
   "language": "node",
   "icon": "icon.png",
   "slug": "maif-epa",
-  "source": "git@github.com:konnectors/maif-epa.git",
+  "source": "git@github.com:konnectors/maif-data-collect.git",
   "editor": "Cozy",
   "vendor_link": "https://www.maif.fr",
   "categories": ["others"],
@@ -22,8 +22,8 @@
     "identities": {
       "type": "io.cozy.identities"
     },
-    "timelines": {
-      "type": "fr.maif.timelines"
+    "events": {
+      "type": "fr.maif.events"
     }
   },
   "developer": {
@@ -42,8 +42,8 @@
         "identities": {
           "description": "Pour pouvoir réutiliser votre identité Maif"
         },
-        "timelines": {
-          "description": "Pour pouvoir vous donnes des informations en temps réel"
+        "events": {
+          "description": "Pour pouvoir vous donner des informations en temps réel"
         }
       }
     },
@@ -57,7 +57,7 @@
         "identities": {
           "description": "Required to save your identity and reuse it"
         },
-        "timelines": {
+        "events": {
           "description": "Required to to give you real time information"
         }
       }

@@ -1,10 +1,10 @@
 {
-  "name": "cozy-konnector-maif-epa",
+  "name": "cozy-konnector-maif-data-collect",
   "version": "0.0.1",
   "description": "",
   "repository": {
     "type": "git",
-    "url": "git@github.com:konnectors/maif-epa.git"
+    "url": "git@github.com:konnectors/maif-data-collect.git"
   },
   "keywords": [],
   "author": "Cozy Cloud",
