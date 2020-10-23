@@ -9,11 +9,7 @@
   "editor": "Cozy",
   "vendor_link": "https://www.maif.fr",
   "categories": ["others"],
-  "fields": {
-    "login": {
-      "type": "text"
-    }
-  },
+  "fields": {},
   "screenshots": [],
   "permissions": {
     "accounts": {

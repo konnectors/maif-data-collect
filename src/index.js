@@ -14,7 +14,6 @@ const baseUrl = 'https://epaapi.preprod.opunmaif.fr/api/data-collect'
 module.exports = new BaseKonnector(start)
 
 async function start(fields, cozyParameters) {
-  const idSiebel = fields.login
   const { id, secret } = cozyParameters.secret
   const request = requestFactory({
     cheerio: false,
@@ -26,60 +25,70 @@ async function start(fields, cozyParameters) {
     // debug: true
   })
 
-  const personnes = await request.get(`${baseUrl}/personnes/${idSiebel}`)
-  log('info', `found ${personnes.length} personne(s)`)
-  if (!personnes || !personnes.length) {
+  const slug = getSlugFromDomain()
+
+  let person
+  try {
+    person = await request.get(`${baseUrl}/persons/${slug}`)
+  } catch (err) {
+    log('error', err.message)
     throw new Error(errors.LOGIN_FAILED)
   }
 
-  const identities = personnes.map(personne => ({
-    fullname: `${personne.prenom} ${personne.nom}`,
+  const identity = {
+    fullname: `${person.prenom} ${person.nom}`,
     name: {
-      familyName: personne.nom,
-      givenName: personne.prenom
+      familyName: person.nom,
+      givenName: person.prenom
     },
-    birthday: personne.dateNaissance,
+    birthday: person.dateNaissance,
     email: [
       {
-        address: personne.coordonnees.email
+        address: person.coordonnees.email
       }
     ],
     address: [
       {
-        street: personne.adresse.numeroVoie,
-        postcode: personne.adresse.codePostal,
-        city: personne.adresse.commune
+        street: person.adresse.numeroVoie,
+        postcode: person.adresse.codePostal,
+        city: person.adresse.commune
       }
     ],
     phone: [
       {
-        number: personne.coordonnees.numeroTelephonePortable
+        number: person.coordonnees.numeroTelephonePortable
       }
     ],
     maif: {
-      codeCivilite: personne.codeCivilite,
-      numeroPaysNaissance: personne.numeroPaysNaissance,
-      paysNaissance: personne.paysNaissance,
-      identifiant: personne.identifiant,
-      numeroSocietaire: personne.numeroSocietaire,
-      codeSexe: personne.codeSexe,
-      profession: personne.profession
+      codeCivilite: person.codeCivilite,
+      numeroPaysNaissance: person.numeroPaysNaissance,
+      paysNaissance: person.paysNaissance,
+      identifiant: person.identifiant,
+      numeroSocietaire: person.numeroSocietaire,
+      codeSexe: person.codeSexe,
+      profession: person.profession
     }
-  }))
-
-  for (const identity of identities) {
-    await this.saveIdentity(identity, idSiebel)
   }
-  log('info', `identities saved`)
 
-  log('info', `Getting timelines`)
-  const timelines = await request.get(
-    `https://epaapi.preprod.opunmaif.fr/api/timelines/${idSiebel}`
-  )
-  log('info', `found ${timelines.length} card(s)`)
-  await this.updateOrCreate(timelines, 'fr.maif.timelines', [
-    'cardID',
-    'idPerson'
-  ])
-  log('info', `timeline saved`)
+  await this.saveIdentity(identity, slug)
+
+  log('info', `identity saved`)
+
+  log('info', `Getting events`)
+  const events = await request.get(`${baseUrl}/events/${slug}`)
+  log('info', `found ${events.length} card(s)`)
+  await this.updateOrCreate(events, 'fr.maif.events', ['cardID', 'personID'])
+  log('info', `events saved`)
+}
+
+function getSlugFromDomain() {
+  const matching = process.env.COZY_URL.match(/^https?:\/\/(.*)\.(.*)\.(.*)$/)
+  if (!matching) {
+    log('error', `wrong COZY_URL : ${process.env.COZY_URL}`)
+    throw new Error(errors.VENDOR_DOWN)
+  }
+
+  const slug = matching[1]
+  log('info', `Found slug ${slug}`)
+  return slug
 }
