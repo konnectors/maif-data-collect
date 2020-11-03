@@ -9,7 +9,8 @@ const {
   log
 } = require('cozy-konnector-libs')
 
-const baseUrl = 'https://epaapi.preprod.opunmaif.fr/api/data-collect'
+const baseUrl =
+  'http://build-epa-maif.francecentral.cloudapp.azure.com/api/data-collect'
 
 module.exports = new BaseKonnector(start)
 
@@ -29,7 +30,12 @@ async function start(fields, cozyParameters) {
 
   let person
   try {
-    person = await request.get(`${baseUrl}/persons/${slug}`)
+    person = await request.get(`${baseUrl}/persons/${slug}?mock=false`, {
+      auth: {
+        user: 'epa-apikey',
+        pass: azureapikey
+      }
+    })
   } catch (err) {
     log('error', err.message)
     throw new Error(errors.LOGIN_FAILED)
@@ -75,15 +81,12 @@ async function start(fields, cozyParameters) {
   log('info', `identity saved`)
 
   log('info', `Getting events`)
-  const events = await request.get(
-    `http://build-epa-maif.francecentral.cloudapp.azure.com/api/data-collect/events/${slug}?mock=false`,
-    {
-      auth: {
-        user: 'epa-apikey',
-        pass: azureapikey
-      }
+  const events = await request.get(`${baseUrl}/events/${slug}?mock=false`, {
+    auth: {
+      user: 'epa-apikey',
+      pass: azureapikey
     }
-  )
+  })
   log('info', `found ${events.length} card(s)`)
   await this.updateOrCreate(events, 'fr.maif.events', ['cardID', 'personID'])
   log('info', `events saved`)
