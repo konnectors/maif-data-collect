@@ -1,0 +1,63 @@
+{
+  "version": "0.0.1",
+  "name": "Maif Data Collect",
+  "type": "konnector",
+  "language": "node",
+  "icon": "icon.png",
+  "slug": "maif-epa",
+  "source": "git@github.com:konnectors/maif-data-collect.git",
+  "editor": "Cozy",
+  "vendor_link": "https://www.maif.fr",
+  "categories": ["others"],
+  "fields": {},
+  "screenshots": [],
+  "permissions": {
+    "accounts": {
+      "type": "io.cozy.accounts"
+    },
+    "identities": {
+      "type": "io.cozy.identities"
+    },
+    "events": {
+      "type": "fr.maif.events"
+    }
+  },
+  "developer": {
+    "name": "Cozy Cloud",
+    "url": "https://cozy.io"
+  },
+  "langs": ["fr", "en"],
+  "locales": {
+    "fr": {
+      "short_description": "Récupère vos données maif",
+      "long_description": "Récupère vos données maif",
+      "permissions": {
+        "accounts": {
+          "description": "Utilisé pour obtenir les données du compte"
+        },
+        "identities": {
+          "description": "Pour pouvoir réutiliser votre identité Maif"
+        },
+        "events": {
+          "description": "Pour pouvoir vous donner des informations en temps réel"
+        }
+      }
+    },
+    "en": {
+      "short_description": "Fetch your maif data",
+      "long_description": "Fetch your maif data",
+      "permissions": {
+        "accounts": {
+          "description": "Required to get the account's data"
+        },
+        "identities": {
+          "description": "Required to save your identity and reuse it"
+        },
+        "events": {
+          "description": "Required to to give you real time information"
+        }
+      }
+    }
+  },
+  "manifest_version": "2"
+}
