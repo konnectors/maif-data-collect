@@ -15,27 +15,23 @@ const baseUrl =
 module.exports = new BaseKonnector(start)
 
 async function start(fields, cozyParameters) {
-  const { id, secret, azureapikey } = cozyParameters.secret
+  const { azureapikey } = cozyParameters.secret
+
   const request = requestFactory({
     cheerio: false,
     json: true,
+    // debug: true,
     auth: {
-      user: id,
-      pass: secret
+      user: 'epa-apikey',
+      pass: azureapikey
     }
-    // debug: true
   })
 
   const slug = getSlugFromDomain()
 
   let person
   try {
-    person = await request.get(`${baseUrl}/persons/${slug}?mock=false`, {
-      auth: {
-        user: 'epa-apikey',
-        pass: azureapikey
-      }
-    })
+    person = await request.get(`${baseUrl}/persons/${slug}?mock=false`)
   } catch (err) {
     log('error', err.message)
     throw new Error(errors.LOGIN_FAILED)
@@ -81,12 +77,7 @@ async function start(fields, cozyParameters) {
   log('info', `identity saved`)
 
   log('info', `Getting events`)
-  const events = await request.get(`${baseUrl}/events/${slug}?mock=false`, {
-    auth: {
-      user: 'epa-apikey',
-      pass: azureapikey
-    }
-  })
+  const events = await request.get(`${baseUrl}/events/${slug}?mock=false`)
   log('info', `found ${events.length} card(s)`)
   await this.updateOrCreate(events, 'fr.maif.events', ['cardID', 'personID'])
   log('info', `events saved`)
@@ -99,7 +90,8 @@ function getSlugFromDomain() {
     throw new Error(errors.VENDOR_DOWN)
   }
 
-  const slug = matching[1]
+  let slug = matching[1]
+  slug = slug.substr(0, 3) + slug.substr(3).toUpperCase()
   log('info', `Found slug ${slug}`)
   return slug
 }
