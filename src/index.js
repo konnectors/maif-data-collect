@@ -14,7 +14,7 @@ const baseUrl = 'https://epaapi.preprod.opunmaif.fr/api/data-collect'
 module.exports = new BaseKonnector(start)
 
 async function start(fields, cozyParameters) {
-  const { id, secret } = cozyParameters.secret
+  const { id, secret, epaapikey } = cozyParameters.secret
   const request = requestFactory({
     cheerio: false,
     json: true,
@@ -22,7 +22,7 @@ async function start(fields, cozyParameters) {
       user: id,
       pass: secret
     }
-    // debug: true
+    // debug: true,
   })
 
   const slug = getSlugFromDomain()
@@ -75,7 +75,15 @@ async function start(fields, cozyParameters) {
   log('info', `identity saved`)
 
   log('info', `Getting events`)
-  const events = await request.get(`${baseUrl}/events/${slug}`)
+  const events = await request.get(
+    `http://build-epa-maif.francecentral.cloudapp.azure.com/api/data-collect/events/soc14E419952?mock=false`,
+    {
+      auth: {
+        user: 'epa-apikey',
+        pass: epaapikey
+      }
+    }
+  )
   log('info', `found ${events.length} card(s)`)
   await this.updateOrCreate(events, 'fr.maif.events', ['cardID', 'personID'])
   log('info', `events saved`)
