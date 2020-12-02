@@ -9,8 +9,7 @@ const {
   log
 } = require('cozy-konnector-libs')
 
-const baseUrl =
-  'http://build-epa-maif.francecentral.cloudapp.azure.com/api/data-collect'
+const baseUrl = 'https://preprod.epa.maif.fr/api/data-collect'
 
 module.exports = new BaseKonnector(start)
 
@@ -74,7 +73,7 @@ async function start(fields, cozyParameters) {
 
   await this.saveIdentity(identity, slug)
 
-  log('info', `identity saved`)
+  // log('info', `identity saved`)
 
   log('info', `Getting events`)
   const events = await request.get(`${baseUrl}/events/${slug}?mock=false`)
