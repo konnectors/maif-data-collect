@@ -73,7 +73,7 @@ async function start(fields, cozyParameters) {
 
   await this.saveIdentity(identity, slug)
 
-  // log('info', `identity saved`)
+  log('info', `identity saved`)
 
   log('info', `Getting events`)
   const events = await request.get(`${baseUrl}/events/${slug}?mock=false`)
@@ -89,8 +89,7 @@ function getSlugFromDomain() {
     throw new Error(errors.VENDOR_DOWN)
   }
 
-  let slug = matching[1]
-  slug = slug.substr(0, 3) + slug.substr(3).toUpperCase()
+  const slug = matching[1]
   log('info', `Found slug ${slug}`)
   return slug
 }
