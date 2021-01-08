@@ -9,7 +9,7 @@ const {
   log
 } = require('cozy-konnector-libs')
 
-const baseUrl = 'https://preprod.epa.maif.fr/api/data-collect'
+const baseUrl = 'https://dev.epa.maif.fr/api/data-collect'
 
 module.exports = new BaseKonnector(start)
 
