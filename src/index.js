@@ -30,53 +30,57 @@ async function start(fields, cozyParameters) {
 
   let person
   try {
-    person = await request.get(`${baseUrl}/persons/${slug}?mock=false`)
+    person = await request.get(`${baseUrl}/persons/${slug}`)
   } catch (err) {
-    log('error', err.message)
-    throw new Error(errors.LOGIN_FAILED)
-  }
-
-  const identity = {
-    fullname: `${person.prenom} ${person.nom}`,
-    name: {
-      familyName: person.nom,
-      givenName: person.prenom
-    },
-    birthday: person.dateNaissance,
-    email: [
-      {
-        address: person.coordonnees.email
-      }
-    ],
-    address: [
-      {
-        street: person.adresse.numeroVoie,
-        postcode: person.adresse.codePostal,
-        city: person.adresse.commune
-      }
-    ],
-    phone: [
-      {
-        number: person.coordonnees.numeroTelephonePortable
-      }
-    ],
-    maif: {
-      codeCivilite: person.codeCivilite,
-      numeroPaysNaissance: person.numeroPaysNaissance,
-      paysNaissance: person.paysNaissance,
-      identifiant: person.identifiant,
-      numeroSocietaire: person.numeroSocietaire,
-      codeSexe: person.codeSexe,
-      profession: person.profession
+    if (err.statusCode === 404) {
+      log('info', 'Found no person')
+    } else {
+      log('error', err.message)
+      throw new Error(errors.LOGIN_FAILED)
     }
   }
 
-  await this.saveIdentity(identity, slug)
-
-  log('info', `identity saved`)
+  if (person) {
+    const identity = {
+      fullname: `${person.prenom} ${person.nom}`,
+      name: {
+        familyName: person.nom,
+        givenName: person.prenom
+      },
+      birthday: person.dateNaissance,
+      email: [
+        {
+          address: person.coordonnees.email
+        }
+      ],
+      address: [
+        {
+          street: person.adresse.numeroVoie,
+          postcode: person.adresse.codePostal,
+          city: person.adresse.commune
+        }
+      ],
+      phone: [
+        {
+          number: person.coordonnees.numeroTelephonePortable
+        }
+      ],
+      maif: {
+        codeCivilite: person.codeCivilite,
+        numeroPaysNaissance: person.numeroPaysNaissance,
+        paysNaissance: person.paysNaissance,
+        identifiant: person.identifiant,
+        numeroSocietaire: person.numeroSocietaire,
+        codeSexe: person.codeSexe,
+        profession: person.profession
+      }
+    }
+    await this.saveIdentity(identity, slug)
+    log('info', `identity saved`)
+  }
 
   log('info', `Getting events`)
-  const events = await request.get(`${baseUrl}/events/${slug}?mock=false`)
+  const events = await request.get(`${baseUrl}/events/${slug}`)
   log('info', `found ${events.length} card(s)`)
   await this.updateOrCreate(events, 'fr.maif.events', ['cardID', 'personID'])
   log('info', `events saved`)
