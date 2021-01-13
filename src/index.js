@@ -93,7 +93,7 @@ async function start(fields, cozyParameters) {
   log('info', `Getting events`)
   const events = await request.get(`${baseUrl}/events/${slug}`)
   log('info', `found ${events.length} card(s)`)
-  await this.updateOrCreate(events, 'fr.maif.events', ['cardID', 'personID'])
+  await this.updateOrCreate(events, 'fr.maif.events', ['cardId', 'personId'])
   log('info', `events saved`)
 }
 
