@@ -9,9 +9,13 @@ const {
   log
 } = require('cozy-konnector-libs')
 
-const baseUrl = 'https://dev.epa.maif.fr/api/data-collect'
-
 module.exports = new BaseKonnector(start)
+
+const domainBaseUrlMap = {
+  'cozy-maif-int.fr': 'https://dev.epa.maif.fr',
+  'cozy-maif-stg.fr': 'https://preprod.epa.maif.fr',
+  'mycozy.eu': 'https://epa.maif.fr'
+}
 
 async function start(fields, cozyParameters) {
   const { azureapikey } = cozyParameters.secret
@@ -26,7 +30,14 @@ async function start(fields, cozyParameters) {
     }
   })
 
-  const slug = getSlugFromDomain()
+  const { slug, domain } = parseUrl(process.env.COZY_URL)
+
+  if (!domainBaseUrlMap[domain]) {
+    log('error', `no api url corresponding to ${domain}`)
+    throw new Error(errors.VENDOR_DOWN)
+  }
+
+  const baseUrl = domainBaseUrlMap[domain] + '/api/data-collect'
 
   let person
   try {
@@ -82,12 +93,12 @@ async function start(fields, cozyParameters) {
   log('info', `Getting events`)
   const events = await request.get(`${baseUrl}/events/${slug}`)
   log('info', `found ${events.length} card(s)`)
-  await this.updateOrCreate(events, 'fr.maif.events', ['cardID', 'personID'])
+  await this.updateOrCreate(events, 'fr.maif.events', ['cardId', 'personId'])
   log('info', `events saved`)
 }
 
-function getSlugFromDomain() {
-  const matching = process.env.COZY_URL.match(/^https?:\/\/(.*)\.(.*)\.(.*)$/)
+function parseUrl(url) {
+  const matching = url.match(/^https?:\/\/(.*)\.(.*)\.(.*)$/)
   if (!matching) {
     log('error', `wrong COZY_URL : ${process.env.COZY_URL}`)
     throw new Error(errors.VENDOR_DOWN)
@@ -95,5 +106,7 @@ function getSlugFromDomain() {
 
   const slug = matching[1]
   log('info', `Found slug ${slug}`)
-  return slug
+
+  const domain = matching[2] + '.' + matching[3]
+  return { slug, domain }
 }
