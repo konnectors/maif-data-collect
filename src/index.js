@@ -19,8 +19,9 @@ const domainBaseUrlMap = {
 
 async function start(fields, cozyParameters) {
   const { azureapikey } = cozyParameters.secret
+  const { id, secret } = fields
 
-  const request = requestFactory({
+  const requestOptions = {
     cheerio: false,
     json: true,
     // debug: true,
@@ -28,7 +29,18 @@ async function start(fields, cozyParameters) {
       user: 'epa-apikey',
       pass: azureapikey
     }
-  })
+  }
+
+  if (id && secret) {
+    Object.assign(requestOptions, {
+      headers: {
+        'Epa-Auth-Id': id,
+        'Epa-Auth-Secret': secret
+      }
+    })
+  }
+
+  const request = requestFactory(requestOptions)
 
   const { slug, domain } = parseUrl(process.env.COZY_URL)
 
