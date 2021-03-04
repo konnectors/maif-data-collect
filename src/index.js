@@ -18,7 +18,7 @@ async function start(fields, cozyParameters) {
   const requestOptions = {
     cheerio: false,
     json: true,
-    // debug: true,
+    // debug: 'json',
     auth: {
       user: 'epa-apikey',
       pass: azureapikey
@@ -44,11 +44,15 @@ async function start(fields, cozyParameters) {
   try {
     person = await request.get(`${baseUrl}/persons/${slug}`)
   } catch (err) {
-    if (err.statusCode === 404) {
+    if (err.statusCode === 401) {
+      log('error', '401: ' + err.message)
+      throw new Error(errors.LOGIN_FAILED)
+    } else if (err.statusCode === 404) {
+      log('warn', '404: ' + err.message)
       log('info', 'Found no person')
     } else {
-      log('error', err.message)
-      throw new Error(errors.LOGIN_FAILED)
+      log('error', err.statusCode + ': ' + err.message)
+      throw new Error(errors.VENDOR_DOWN)
     }
   }
 
