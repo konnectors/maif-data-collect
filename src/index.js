@@ -6,7 +6,9 @@ const {
   BaseKonnector,
   requestFactory,
   errors,
-  log
+  log,
+  cozyClient,
+  manifest
 } = require('cozy-konnector-libs')
 
 module.exports = new BaseKonnector(start)
@@ -44,11 +46,8 @@ async function start(fields, cozyParameters) {
   try {
     person = await request.get(`${baseUrl}/persons/${slug}`)
   } catch (err) {
-    if (err.statusCode === 401) {
-      log('error', '401: ' + err.message)
-      throw new Error(errors.LOGIN_FAILED)
-    } else if (err.statusCode === 404) {
-      log('warn', '404: ' + err.message)
+    if (err.statusCode === 404) {
+      log('info', '404: ' + err.message)
       log('info', 'Found no person')
     } else {
       log('error', err.statusCode + ': ' + err.message)
@@ -93,6 +92,13 @@ async function start(fields, cozyParameters) {
     }
     await this.saveIdentity(identity, slug)
     log('info', `identity saved`)
+  } else {
+    const existingIdentity = (await cozyClient.data.findAll(
+      'io.cozy.identities'
+    )).find(doc => doc.cozyMetadata.createdByApp === manifest.data.slug)
+    if (!existingIdentity) {
+      log('warn', 'No person found in maif api and no existing identity')
+    }
   }
 
   log('info', `Getting events`)
