@@ -11,6 +11,8 @@ const {
   manifest
 } = require('cozy-konnector-libs')
 
+const get = require('lodash/get')
+
 module.exports = new BaseKonnector(start)
 
 async function start(fields, cozyParameters) {
@@ -70,14 +72,14 @@ async function start(fields, cozyParameters) {
       ],
       address: [
         {
-          street: person.adresse.numeroVoie,
-          postcode: person.adresse.codePostal,
-          city: person.adresse.commune
+          street: get(person, 'adresse.numeroVoie'),
+          postcode: get(person, 'adresse.codePostal'),
+          city: get(person, 'adresse.commune')
         }
       ],
       phone: [
         {
-          number: person.coordonnees.numeroTelephonePortable
+          number: get(person, 'coordonnees.numeroTelephonePortable')
         }
       ],
       maif: {
