@@ -58,6 +58,11 @@ async function start(fields, cozyParameters) {
   }
 
   if (person) {
+    if (!person.identifiant) {
+      log('error', 'Missing mendatory identifiant field in person')
+      throw new Error('VENDOR_DOWN')
+    }
+
     const identity = {
       fullname: `${person.prenom} ${person.nom}`,
       name: {
