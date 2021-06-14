@@ -72,7 +72,7 @@ async function start(fields, cozyParameters) {
       birthday: person.dateNaissance,
       email: [
         {
-          address: person.coordonnees.email
+          address: get(person, 'coordonnees.email')
         }
       ],
       address: [
