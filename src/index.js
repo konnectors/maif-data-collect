@@ -63,8 +63,11 @@ async function start(fields, cozyParameters) {
       throw new Error('VENDOR_DOWN')
     }
 
+    const fullname =
+      person.prenom && person.nom ? `${person.prenom} ${person.nom}` : undefined
+
     const identity = {
-      fullname: `${person.prenom} ${person.nom}`,
+      fullname,
       name: {
         familyName: person.nom,
         givenName: person.prenom
