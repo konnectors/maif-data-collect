@@ -1,6 +1,6 @@
 {
   "name": "cozy-konnector-maif-data-collect",
-  "version": "0.3.1",
+  "version": "0.5.0",
   "description": "",
   "repository": {
     "type": "git",
@@ -37,11 +37,10 @@
     "travisDeployKey": "./bin/generate_travis_deploy_key"
   },
   "dependencies": {
-    "cozy-konnector-libs": "4.40.1",
-    "lodash": "^4.17.21"
+    "cozy-konnector-libs": "4.42.0"
   },
   "devDependencies": {
-    "cozy-jobs-cli": "1.15.9",
-    "cozy-konnector-build": "1.1.7"
+    "cozy-jobs-cli": "1.16.1",
+    "cozy-konnector-build": "1.2.0"
   }
 }
