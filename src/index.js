@@ -39,9 +39,34 @@ async function start(fields, cozyParameters) {
   const request = requestFactory(requestOptions)
 
   const { slug } = parseUrl(process.env.COZY_URL)
-
+  // Payload present if called via webhook
+  const rawPayload = JSON.parse(process.env.COZY_PAYLOAD || '{}')
+  const payload = rawPayload.payloads[0]
   const baseUrl = dataCollectApiUrl + '/api/data-collect'
 
+  if (
+    payload.scopes &&
+    Array.isArray(payload.scopes) &&
+    // For now we need to launch both routine if scopes is empty
+    payload.scopes.length > 0
+  ) {
+    if (payload.scopes.includes('fr.maif.events')) {
+      log('info', 'Lauching Events routine')
+      await getEvents.bind(this)(request, baseUrl, slug)
+    }
+    if (payload.scopes.includes('io.cozy.identities')) {
+      log('info', 'Lauching Person routine')
+      await savePerson.bind(this)(request, baseUrl, slug)
+    }
+  } else {
+    // For now, we launch all 2 routines in all other cases
+    log('info', 'Lauching both person and event routine')
+    await savePerson.bind(this)(request, baseUrl, slug)
+    await getEvents.bind(this)(request, baseUrl, slug)
+  }
+}
+
+async function savePerson(request, baseUrl, slug) {
   let person
   try {
     person = await request.get(`${baseUrl}/persons/${slug}`)
@@ -96,14 +121,16 @@ async function start(fields, cozyParameters) {
     await this.saveIdentity(identity, slug)
     log('info', `identity saved`)
   } else {
-    const existingIdentity = (await cozyClient.data.findAll(
-      'io.cozy.identities'
-    )).find(doc => doc.cozyMetadata.createdByApp === manifest.data.slug)
+    const existingIdentity = (
+      await cozyClient.data.findAll('io.cozy.identities')
+    ).find(doc => doc.cozyMetadata.createdByApp === manifest.data.slug)
     if (!existingIdentity) {
       log('warn', 'No person found in maif api and no existing identity')
     }
   }
+}
 
+async function getEvents(request, baseUrl, slug) {
   log('info', `Getting events`)
   const events = await request.get(`${baseUrl}/events/${slug}`)
   log('info', `found ${events.length} card(s)`)
