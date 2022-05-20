@@ -11,6 +11,9 @@ const {
   manifest
 } = require('cozy-konnector-libs')
 
+const client = cozyClient.new
+const { Q } = require('cozy-client')
+
 module.exports = new BaseKonnector(start)
 
 async function start(fields, cozyParameters) {
@@ -121,10 +124,12 @@ async function savePerson(request, baseUrl, slug) {
     await this.saveIdentity(identity, slug)
     log('info', `identity saved`)
   } else {
-    const existingIdentity = (
-      await cozyClient.data.findAll('io.cozy.identities')
-    ).find(doc => doc.cozyMetadata.createdByApp === manifest.data.slug)
-    if (!existingIdentity) {
+    const { data: existingIdentity } = await client.query(
+      Q('io.cozy.identities')
+        .where({ cozyMetadata: { createdByApp: manifest.data.slug } })
+        .indexFields(['cozyMetadata.createdByApp'])
+    )
+    if (existingIdentity.length < 1) {
       log('warn', 'No person found in maif api and no existing identity')
     }
   }
