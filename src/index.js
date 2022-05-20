@@ -13,6 +13,7 @@ const {
 
 const client = cozyClient.new
 const { Q } = require('cozy-client')
+const get = require('lodash/get')
 
 module.exports = new BaseKonnector(start)
 
@@ -87,8 +88,16 @@ async function savePerson(request, baseUrl, slug) {
   }
 
   if (person) {
+    if (!person.identifiant) {
+      log('error', 'Missing mendatory identifiant field in person')
+      throw new Error('VENDOR_DOWN')
+    }
+
+    const fullname =
+      person.prenom && person.nom ? `${person.prenom} ${person.nom}` : undefined
+
     const identity = {
-      fullname: `${person.prenom} ${person.nom}`,
+      fullname,
       name: {
         familyName: person.nom,
         givenName: person.prenom
@@ -96,19 +105,19 @@ async function savePerson(request, baseUrl, slug) {
       birthday: person.dateNaissance,
       email: [
         {
-          address: person.coordonnees.email
+          address: get(person, 'coordonnees.email')
         }
       ],
       address: [
         {
-          street: person.adresse.numeroVoie,
-          postcode: person.adresse.codePostal,
-          city: person.adresse.commune
+          street: get(person, 'adresse.numeroVoie'),
+          postcode: get(person, 'adresse.codePostal'),
+          city: get(person, 'adresse.commune')
         }
       ],
       phone: [
         {
-          number: person.coordonnees.numeroTelephonePortable
+          number: get(person, 'coordonnees.numeroTelephonePortable')
         }
       ],
       maif: {
