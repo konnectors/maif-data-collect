@@ -45,10 +45,14 @@ async function start(fields, cozyParameters) {
   const { slug } = parseUrl(process.env.COZY_URL)
   // Payload present if called via webhook
   const rawPayload = JSON.parse(process.env.COZY_PAYLOAD || '{}')
-  const payload = rawPayload.payloads[0]
+  let payload
+  if (rawPayload.payloads && Array.isArray(rawPayload.payloads)) {
+    payload = rawPayload.payloads[0]
+  }
   const baseUrl = dataCollectApiUrl + '/api/data-collect'
 
   if (
+    payload &&
     payload.scopes &&
     Array.isArray(payload.scopes) &&
     // For now we need to launch both routine if scopes is empty
