@@ -100,7 +100,7 @@ async function savePerson(request, baseUrl, slug) {
     const fullname =
       person.prenom && person.nom ? `${person.prenom} ${person.nom}` : undefined
 
-    const identity = {
+    let identity = {
       fullname,
       name: {
         familyName: person.nom,
@@ -134,6 +134,13 @@ async function savePerson(request, baseUrl, slug) {
         profession: person.profession
       }
     }
+    // Append unknown key to maif bloc
+    for (const key of Object.keys(person)) {
+      if (!isKnownKey(key)) {
+        identity.maif[key] = get(person, key)
+      }
+    }
+    // Saving identity
     await this.saveIdentity(identity, slug)
     log('info', `identity saved`)
   } else {
@@ -154,6 +161,24 @@ async function getEvents(request, baseUrl, slug) {
   log('info', `found ${events.length} card(s)`)
   await this.updateOrCreate(events, 'fr.maif.events', ['cardId', 'personId'])
   log('info', `events saved`)
+}
+
+function isKnownKey(key) {
+  const known = [
+    'nom',
+    'prenom',
+    'dateNaissance',
+    'coordonnees',
+    'adresse',
+    'codeCivilite',
+    'numeroPaysNaissance',
+    'paysNaissance',
+    'identifiant',
+    'numeroSocietaire',
+    'codeSexe',
+    'profession'
+  ]
+  return known.includes(key)
 }
 
 function parseUrl(url) {
