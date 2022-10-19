@@ -141,7 +141,7 @@ async function savePerson(request, baseUrl, slug) {
       }
     }
     // Saving identity
-    await this.saveIdentity(identity, slug)
+    await this.saveIdentity(identity, slug, { merge: false })
     log('info', `identity saved`)
   } else {
     const { data: existingIdentity } = await client.query(
