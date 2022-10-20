@@ -1,6 +1,6 @@
 {
   "name": "cozy-konnector-maif-data-collect",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "",
   "repository": {
     "type": "git",
@@ -39,7 +39,7 @@
     "cozy-konnector-libs": "4.56.0"
   },
   "devDependencies": {
-    "cozy-jobs-cli": "1.19.2",
+    "cozy-jobs-cli": "1.19.3",
     "cozy-konnector-build": "1.3.4"
   }
 }
